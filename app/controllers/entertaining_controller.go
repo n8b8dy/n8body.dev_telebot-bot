@@ -27,13 +27,13 @@ func (*EntertainingController) MemeCommand(ctx telebot.Context) error {
 	}
 
 	url := fmt.Sprintf("https://meme-api.com/gimme/%d", amount)
-	memeResposne, err := http.Get(url)
+	memeResponse, err := http.Get(url)
 	if err != nil {
 		return err
 	}
 
 	memesData := dtos.MemeResponseDTO{}
-	if err := json.NewDecoder(memeResposne.Body).Decode(&memesData); err != nil {
+	if err := json.NewDecoder(memeResponse.Body).Decode(&memesData); err != nil {
 		return err
 	}
 
