@@ -2,6 +2,10 @@ package utils
 
 import "strings"
 
+func JoinLine(parts ...string) string {
+	return strings.Join(parts, " ")
+}
+
 func JoinMultiline(lines ...string) string {
 	return strings.Join(lines, "\n")
 }

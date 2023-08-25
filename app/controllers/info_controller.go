@@ -24,7 +24,11 @@ func (controller *InfoController) StartCommand(ctx telebot.Context) error {
 	}
 
 	response1 := fmt.Sprintf(
-		"Welcome, %s! This is a bot made by n8body for educational and experimental purposes. The current version is written in Go. Use /help to see all the available commands.",
+		utils.JoinLine(
+			`Welcome, %s! This is a bot made by n8body for educational and experimental purposes.`,
+			`The current version is written in Go.`,
+			`Use /help to see all the available commands.`,
+		),
 		welcomeName,
 	)
 
@@ -46,23 +50,23 @@ func (controller *InfoController) StartCommand(ctx telebot.Context) error {
 
 func (*InfoController) HelpCommand(ctx telebot.Context) error {
 	response := utils.JoinMultiline(
-		"Here's a list of all the functionality of the bot:",
-		"- Information Commands:",
-		"  /start - shows initial message",
-		"  /help, /commands - shows this message",
-		"  /bot - shows information about the bot",
-		"  /me - shows information about the user",
-		"  /chat - shows information about the chat (cannot be used in private chats)",
-		"- Sticker Commands:",
-		"  [sticker] - returns the sticker's ID (can be used only in private chats)",
-		"  /sticker [ID] - shows the sticker with the provided ID",
-		"- Entertaining Commands:",
-		"  /meme - sends a random meme",
-		"  /photo - sends a random photo",
-		"- Admin Commands:",
-		"  (under construction)",
-		"- Creator Commands... you don't need them",
-		"- And some easter eggs",
+		`Here's a list of all the functionality of the bot:`,
+		`- Information Commands:`,
+		`  /start - shows initial message`,
+		`  /help, /commands - shows this message`,
+		`  /bot - shows information about the bot`,
+		`  /me - shows information about the user`,
+		`  /chat - shows information about the chat (cannot be used in private chats)`,
+		`- Sticker Commands:`,
+		`  [sticker] - returns the sticker's ID (can be used only in private chats)`,
+		`  /sticker [ID] - shows the sticker with the provided ID`,
+		`- Entertaining Commands:`,
+		`  /meme - sends a random meme`,
+		`  /photo - sends a random photo`,
+		`- Admin Commands:`,
+		`  (under construction)`,
+		`- Creator Commands... you don't need them`,
+		`- And some easter eggs`,
 	)
 
 	return ctx.Send(response)
@@ -71,14 +75,14 @@ func (*InfoController) HelpCommand(ctx telebot.Context) error {
 func (*InfoController) MeCommand(ctx telebot.Context) error {
 	sender := ctx.Sender()
 
-	firstName := sender.FirstName
+	firstName := utils.EscapeHTML(sender.FirstName)
 	if firstName == "" {
-		firstName = "[DATA EXPUNGED]"
+		firstName = `<i>[DATA EXPUNGED]</i>`
 	}
 
-	lastName := sender.LastName
+	lastName := utils.EscapeHTML(sender.LastName)
 	if lastName == "" {
-		lastName = "[DATA EXPUNGED]"
+		lastName = `<i>[DATA EXPUNGED]</i>`
 	}
 
 	isBot := sender.IsBot
@@ -89,17 +93,17 @@ func (*InfoController) MeCommand(ctx telebot.Context) error {
 
 	responseCaption := fmt.Sprintf(
 		utils.JoinMultiline(
-			"Username: <code>%s</code>",
-			"ID: <code>%d</code>",
-			"First name: <i>%s</i>",
-			"Last name: <i>%s</i>",
-			"Bot: %t",
-			"Premium: %t",
+			`Username: <code>%s</code>`,
+			`ID: <code>%d</code>`,
+			`First name: %s`,
+			`Last name: %s`,
+			`Bot: %t`,
+			`Premium: %t`,
 		),
 		sender.Username,
 		sender.ID,
-		utils.EscapeHTML(firstName),
-		utils.EscapeHTML(lastName),
+		firstName,
+		lastName,
 		isBot,
 		sender.IsPremium,
 	)

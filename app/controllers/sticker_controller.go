@@ -20,7 +20,7 @@ func (*StickerController) Sticker(ctx telebot.Context) error {
 	message := ctx.Message()
 	stickerID := message.Sticker.File.FileID
 
-	response := fmt.Sprintf("Sticker ID: <code>%s</code>", stickerID)
+	response := fmt.Sprintf(`Sticker ID: <code>%s</code>`, stickerID)
 
 	return ctx.Reply(response, &telebot.SendOptions{
 		ParseMode: "HTML",
