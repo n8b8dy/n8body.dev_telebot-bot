@@ -11,4 +11,5 @@ func InfoHandlers(bot *telebot.Bot, controller *controllers.MainController) {
 	info.Handle("/help", controller.HelpCommand)
 	info.Handle("/commands", controller.HelpCommand)
 	info.Handle("/me", controller.MeCommand)
+	info.Handle("/bot", controller.BotCommand)
 }
