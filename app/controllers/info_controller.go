@@ -73,12 +73,12 @@ func (*InfoController) MeCommand(ctx telebot.Context) error {
 
 	firstName := sender.FirstName
 	if firstName == "" {
-		firstName = "_\\[DATA EXPUNGED\\]_"
+		firstName = "[DATA EXPUNGED]"
 	}
 
 	lastName := sender.LastName
 	if lastName == "" {
-		lastName = "_\\[DATA EXPUNGED\\]_"
+		lastName = "[DATA EXPUNGED]"
 	}
 
 	isBot := sender.IsBot
@@ -89,17 +89,17 @@ func (*InfoController) MeCommand(ctx telebot.Context) error {
 
 	responseCaption := fmt.Sprintf(
 		utils.JoinMultiline(
-			"Username: `%s`",
-			"ID: `%d`",
-			"First name: %s",
-			"Last name: %s",
+			"Username: <code>%s</code>",
+			"ID: <code>%d</code>",
+			"First name: <i>%s</i>",
+			"Last name: <i>%s</i>",
 			"Bot: %t",
 			"Premium: %t",
 		),
 		sender.Username,
 		sender.ID,
-		firstName,
-		lastName,
+		utils.EscapeHTML(firstName),
+		utils.EscapeHTML(lastName),
 		isBot,
 		sender.IsPremium,
 	)
@@ -109,7 +109,7 @@ func (*InfoController) MeCommand(ctx telebot.Context) error {
 		return err
 	} else if len(profilePhotos) == 0 {
 		return ctx.Send(responseCaption, &telebot.SendOptions{
-			ParseMode: "MarkdownV2",
+			ParseMode: "HTML",
 		})
 	}
 
@@ -117,6 +117,6 @@ func (*InfoController) MeCommand(ctx telebot.Context) error {
 	response.Caption = responseCaption
 
 	return ctx.Send(&response, &telebot.SendOptions{
-		ParseMode: "MarkdownV2",
+		ParseMode: "HTML",
 	})
 }

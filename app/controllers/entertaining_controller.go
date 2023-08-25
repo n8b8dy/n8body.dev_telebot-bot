@@ -26,7 +26,7 @@ func (*EntertainingController) MemeCommand(ctx telebot.Context) error {
 		}
 	}
 
-	url := fmt.Sprintf("https://meme-api.com/gimme/%s", amount)
+	url := fmt.Sprintf("https://meme-api.com/gimme/%d", amount)
 	memeResposne, err := http.Get(url)
 	if err != nil {
 		return err
@@ -38,11 +38,12 @@ func (*EntertainingController) MemeCommand(ctx telebot.Context) error {
 	}
 
 	for _, meme := range memesData.Memes {
-		source := fmt.Sprintf("||[source](%s)||", meme.Preview[len(meme.Preview)-1])
-		response := utils.JoinMultiline(meme.Title, source)
+		title := utils.EscapeHTML(meme.Title)
+		source := fmt.Sprintf(`<tg-spoiler><a href="%s">source</a></tg-spoiler>`, meme.Preview[len(meme.Preview)-1])
+		response := utils.JoinMultiline(title, source)
 
 		if err := ctx.Send(response, &telebot.SendOptions{
-			ParseMode: "MarkdownV2",
+			ParseMode: "HTML",
 		}); err != nil {
 			continue
 		}
