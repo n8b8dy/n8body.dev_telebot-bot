@@ -35,6 +35,18 @@ func main() {
 	bot.Use(middleware.Logger())
 	bot.Use(middleware.Recover())
 
+	if err := bot.SetCommands([]telebot.Command{
+		{"/start", "shows initial message"},
+		{"/help", "shows the list of all bot functions"},
+		{"/commands", "alias for /help"},
+		{"/bot", "shows information about the bot"},
+		{"/me", "shows information about the user"},
+		{"/chat", "shows information about the chat (cannot be used in private chats)"},
+		{"/meme", "sends a random meme"},
+	}); err != nil {
+		log.Fatal(err)
+	}
+
 	handlers.InfoHandlers(bot, controller)
 	handlers.StickerHandlers(bot, controller)
 	handlers.EntertainingHandlers(bot, controller)
