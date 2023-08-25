@@ -37,6 +37,7 @@ func main() {
 
 	handlers.InfoHandlers(bot, controller)
 	handlers.StickerHandlers(bot, controller)
+	handlers.EntertainingHandlers(bot, controller)
 	handlers.EasterHandlers(bot, controller)
 
 	fmt.Println("Starting the bot...")
