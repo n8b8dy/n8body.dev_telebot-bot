@@ -31,6 +31,7 @@ func (*EntertainingController) MemeCommand(ctx telebot.Context) error {
 	if err != nil {
 		return err
 	}
+	defer memeResponse.Body.Close()
 
 	memesData := dtos.MemeResponseDTO{}
 	if err := json.NewDecoder(memeResponse.Body).Decode(&memesData); err != nil {
