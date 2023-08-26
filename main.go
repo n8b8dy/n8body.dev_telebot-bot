@@ -39,7 +39,7 @@ func main() {
 		{"/start", "shows initial message"},
 		{"/help", "shows the list of all bot functions"},
 		{"/commands", "alias for /help"},
-		{"/bot", "shows information about the bot"},
+		{"/bot", "shows story about the bot (AI powered, xd)"},
 		{"/me", "shows information about the user"},
 		{"/chat", "shows information about the chat (cannot be used in private chats)"},
 		{"/meme", "sends a random meme"},
