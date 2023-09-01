@@ -33,7 +33,7 @@ func (*EntertainingController) MemeCommand(ctx telebot.Context) error {
 	}
 	defer memeResponse.Body.Close()
 
-	memesData := dtos.MemeResponseDTO{}
+	var memesData dtos.MemeResponseDTO
 	if err := json.NewDecoder(memeResponse.Body).Decode(&memesData); err != nil {
 		return err
 	}
