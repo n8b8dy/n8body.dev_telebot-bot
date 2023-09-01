@@ -22,7 +22,7 @@ func OpenDBConnection() (*gorm.DB, error) {
 		return nil, err
 	}
 
-	if err = db.AutoMigrate(&models.StartSticker{}); err != nil {
+	if err = db.AutoMigrate(&models.StartSticker{}, &models.User{}, &models.BotStory{}); err != nil {
 		return nil, err
 	}
 

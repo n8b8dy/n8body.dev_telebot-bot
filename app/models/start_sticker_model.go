@@ -1,7 +1,8 @@
 package models
 
 type StartSticker struct {
-	ID    string `gorm:"primaryKey"`
-	Name  string
-	Topic string
+	BaseModel
+	FileID string
+	Name   string
+	Topic  string
 }

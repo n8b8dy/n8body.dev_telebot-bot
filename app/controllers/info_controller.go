@@ -45,7 +45,7 @@ func (controller *InfoController) StartCommand(ctx telebot.Context) error {
 
 	response2 := &telebot.Sticker{
 		File: telebot.File{
-			FileID: randSticker.ID,
+			FileID: randSticker.FileID,
 		},
 	}
 
@@ -128,10 +128,27 @@ func (*InfoController) MeCommand(ctx telebot.Context) error {
 	})
 }
 
-func (*InfoController) BotCommand(ctx telebot.Context) error {
+func (controller *InfoController) BotCommand(ctx telebot.Context) error {
+	sender := ctx.Message().Sender
+
 	response1 := "Looking for the manuscripts in the archive... Wait a second..."
 	if err := ctx.Send(response1); err != nil {
 		return err
+	}
+
+	var botStory models.BotStory
+	var response2 string
+
+	if err := controller.Where(&models.BotStory{
+		User: models.User{
+			TelegramID: sender.ID,
+		},
+	}).First(&botStory).Error; err == nil {
+		response2 = botStory.Text
+
+		return ctx.Send(response2, &telebot.SendOptions{
+			ParseMode: "HTML",
+		})
 	}
 
 	gptRequestBody, err := json.Marshal(dtos.GptRequestDTO{
@@ -165,12 +182,27 @@ func (*InfoController) BotCommand(ctx telebot.Context) error {
 	}
 	defer gptResponse.Body.Close()
 
-	gptData := dtos.GptResponseDTO{}
+	var gptData dtos.GptResponseDTO
 	if err := json.NewDecoder(gptResponse.Body).Decode(&gptData); err != nil {
 		return err
 	}
 
-	response2 := gptData.Choices[0].Message.Content
+	botStory.User = models.User{
+		TelegramID:   sender.ID,
+		FirstName:    sender.FirstName,
+		LastName:     sender.LastName,
+		Username:     sender.Username,
+		LanguageCode: sender.LanguageCode,
+		IsBot:        sender.IsBot,
+		IsPremium:    sender.IsPremium,
+	}
+	botStory.Text = gptData.Choices[0].Message.Content
+
+	if err := controller.Create(&botStory).Error; err != nil {
+		return err
+	}
+
+	response2 = botStory.Text
 
 	return ctx.Send(response2, &telebot.SendOptions{
 		ParseMode: "HTML",
