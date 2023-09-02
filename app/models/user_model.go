@@ -2,7 +2,7 @@ package models
 
 type User struct {
 	BaseModel
-	TelegramID   int64
+	TelegramID   int64 `gorm:"uniqueIndex"`
 	FirstName    string
 	LastName     string
 	Username     string

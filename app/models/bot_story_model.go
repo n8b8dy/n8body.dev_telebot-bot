@@ -1,10 +1,8 @@
 package models
 
-import "github.com/google/uuid"
-
 type BotStory struct {
 	BaseModel
-	Text   string
-	UserID uuid.UUID
-	User   User
+	Text           string
+	UserTelegramID int64
+	User           User `gorm:"foreignKey:UserTelegramID;references:TelegramID"`
 }

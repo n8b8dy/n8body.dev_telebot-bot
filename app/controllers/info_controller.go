@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -139,11 +140,9 @@ func (controller *InfoController) BotCommand(ctx telebot.Context) error {
 	var botStory models.BotStory
 	var response2 string
 
-	if err := controller.Where(&models.BotStory{
-		User: models.User{
-			TelegramID: sender.ID,
-		},
-	}).First(&botStory).Error; err == nil {
+	if err := controller.Where(&models.BotStory{UserTelegramID: sender.ID}).First(&botStory).Error; err != nil {
+		log.Println("Couldn't find a story for the sender in DB.")
+	} else {
 		response2 = botStory.Text
 
 		return ctx.Send(response2, &telebot.SendOptions{
@@ -168,10 +167,12 @@ func (controller *InfoController) BotCommand(ctx telebot.Context) error {
 		return nil
 	}
 
+	log.Println("Asking ChatGPT for a story...")
 	gptRequest, err := http.NewRequest(http.MethodPost, "https://api.openai.com/v1/chat/completions", bytes.NewReader(gptRequestBody))
 	if err != nil {
 		return err
 	}
+	defer gptRequest.Body.Close()
 
 	gptRequest.Header.Set("Content-Type", "application/json")
 	gptRequest.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("OPENAI_API_KEY")))
@@ -181,6 +182,8 @@ func (controller *InfoController) BotCommand(ctx telebot.Context) error {
 		return err
 	}
 	defer gptResponse.Body.Close()
+
+	log.Println("Got the story!")
 
 	var gptData dtos.GptResponseDTO
 	if err := json.NewDecoder(gptResponse.Body).Decode(&gptData); err != nil {

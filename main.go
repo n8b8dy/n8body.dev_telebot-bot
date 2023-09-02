@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"time"
@@ -23,12 +22,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Connecting to database...")
+	log.Println("Connecting to database...")
 	db, err := database.OpenDBConnection()
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Done!")
+	log.Println("Done!")
 
 	controller := controllers.NewMainController(db)
 
@@ -52,6 +51,6 @@ func main() {
 	handlers.EntertainingHandlers(bot, controller)
 	handlers.EasterHandlers(bot, controller)
 
-	fmt.Println("Starting the bot...")
+	log.Println("Starting the bot...")
 	bot.Start()
 }
